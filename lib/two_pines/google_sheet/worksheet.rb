@@ -45,6 +45,10 @@ class Worksheet
     @ws.set_background_color row+1, column+1, 1, 1, GoogleDrive::Worksheet::Colors::GREEN
   end
 
+  def paint_cell_yellow row, column
+    @ws.set_background_color row+1, column+1, 1, 1, GoogleDrive::Worksheet::Colors::YELLOW
+  end
+
   def save
     @ws.save
   end

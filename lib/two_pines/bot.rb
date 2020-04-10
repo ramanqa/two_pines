@@ -25,7 +25,7 @@ class Bot
 
   def start_browser
     @browser.quit if @browser
-    #Selenium::WebDriver.logger.level = :debug
+    #Selenium::WebDriver.logger.level = :info
     $browser = Selenium::WebDriver.for :chrome
     @browser = $browser
     @browser.manage.timeouts.implicit_wait = 30
@@ -54,8 +54,13 @@ class Bot
       if @node_objects.key? node_data['display_type']
         node = @node_objects[node_data['display_type']].new node_data, level_bct, parent
       end
-      node.assert_title
-      node.assert_open
+
+      node.data.each do |key, value|
+        if !key.start_with? "__"
+          node.send "assert_#{key}"
+        end
+      end
+
       if @custom_reporter
         node.finalize_report @custom_reporter
       else

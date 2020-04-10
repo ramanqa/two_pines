@@ -29,32 +29,30 @@ module Item
     Selenium::WebDriver::Wait.new :timeout=>timeout
   end
 
-  def text
-    raise "Not implemented"
-  end
-
-  def open
-    raise "Not implemented"
-  end
-
-  def close
-    raise "Not implemented"
-  end
-
-  def aria_label
-    raise "Not implemented"
-  end
-
   def method_missing method, *args, &block
     if method.to_s.start_with? "assert_"
       property = method.to_s.split('assert_')[1]
       begin
-        actual = eval "#{property}()"
+        if eval("self.class.method_defined? '#{property}_is?'")
+          actual = eval "#{property}_is?('#{@data[property]}')"
+        else
+          actual = eval "#{property}()"
+        end
+      rescue NoMethodError => e
+        actual = "NoMethodError"
       rescue Exception => e
         actual = "Exception: " + e.class.to_s # + "\\n" +  e.message.gsub!(/"/, "'").gsub!(/\n/, "\\n")
       end
-      if actual == @data[property]
+      if [TrueClass, FalseClass].include?(actual.class)
+        if actual
+          log_success property, @data[property]
+        else
+          log_failure property, @data[property], actual
+        end
+      elsif actual == @data[property]
         log_success property, @data[property]
+      elsif actual == "NoMethodError"
+        log_skipped property, @data[property]
       else
         log_failure property, @data[property], actual
       end

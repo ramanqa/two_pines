@@ -29,12 +29,14 @@ module Reporter
     # print title with section
     File.open './report/slides.js', 'a' do |f|
       f.puts "e = document.createElement('section');"
-      f.puts "\nhtml=\"<h3>#{section}:#{node_data['title']}</h3>\";"
+      f.puts "html = \"<h3>#{section}:#{node_data['title']}</h3>\";"
+      f.puts "html += \"<div style='height: 500px;overflow: auto;'>\";"
     end
   end
 
   def finalize_report custom_reporter=nil
     File.open './report/slides.js', 'a' do |f|
+      f.puts "html += \"<div>\";"
       f.puts "e.innerHTML=html;"
       f.puts "document.querySelector('.slides').appendChild(e);"
     end
@@ -58,12 +60,33 @@ module Reporter
       f.puts "html += \"<div class='assertion fail' style='text-align:left;'>\";"
       f.puts "html += \"<img src='./reveal.js/fail.png' style='border:0;height:30px;margin:0;'/>\";"
       f.puts "html += \"<strong>#{property}:</strong>&nbsp;#{expected}\";"
-      f.puts "html += \"<a href='images/#{file_name}' target='_blank'><img src='images/#{file_name}' style='border:0;height:100px;margin:0;'/></a>\";"
+      f.puts "html += \"<a href='images/#{file_name}' target='_blank'><img src='images/#{file_name}' style='border:0;height:50px;margin:0;'/></a>\";"
       f.puts "html += \"<pre style='font-size:0.3em;'><code>Expected: #{expected}\\nActual: #{actual}</code></pre>\";"
       f.puts "html += \"</div>\";"
     end
   end
 
+  def log_skipped property, expected
+    puts "Fail: #{property} | expected: #{expected}"
+    result = Hash.new
+    result['status'] = "SKIP"
+    result['property'] = property
+    result['expected'] = expected
+    @item_report['results'].push result
+    file_name = "#{Time.now.to_f}.png"
+    $browser.save_screenshot("./report/images/#{file_name}")
+    File.open './report/slides.js', 'a' do |f|
+      f.puts "if(e.getAttribute('data-background') == null){"
+      f.puts "  e.setAttribute('data-background','#ffdd77');"
+      f.puts "}"
+      f.puts "html += \"<div class='assertion fail' style='text-align:left;'>\";"
+      f.puts "html += \"<img src='./reveal.js/skip.png' style='border:0;height:30px;margin:0;'/>\";"
+      f.puts "html += \"<strong>#{property}:</strong>&nbsp;#{expected}\";"
+      f.puts "html += \"<a href='images/#{file_name}' target='_blank'><img src='images/#{file_name}' style='border:0;height:50px;margin:0;'/></a>\";"
+      f.puts "html += \"<pre style='font-size:0.3em;'><code>Expected: #{expected}</code></pre>\";"
+      f.puts "html += \"</div>\";"
+    end
+  end
 
   def log_success property, actual
     puts "Pass: #{property} | actual: #{actual}"
