@@ -4,7 +4,7 @@ require 'two_pines/reporter'
 module TwoPines
 class Bot
 
-  attr_accessor :app_driver_class, :app_driver, :browser, :source_table, :config, :node_ui_objects, :custom_reporter, :options
+  attr_accessor :app_driver_class, :app_driver, :browser, :source_table, :node_object_map, :config, :custom_reporter, :options
 
   #
   # {
@@ -16,7 +16,7 @@ class Bot
   def initialize config
     Reporter.init_reporter
 
-    @node_objects = config[:node_object_map]
+    @node_object_map = config[:node_object_map]
     @source_table = config[:source_data]
     @app_driver_class = config[:app_driver_class]
     @custom_reporter = config[:custom_reporter] if config.key? :custom_reporter
@@ -41,7 +41,6 @@ class Bot
     start_browser
     level_bct = [0,0,0,0,0]
     parent = Array.new
-    require 'pp'
     @source_table.each do |node_data|
       level_bct[node_data['level'].to_i-1] += 1
       parent[node_data['level'].to_i-1] = node_data
@@ -57,9 +56,11 @@ class Bot
         end
       end
 
-      node = @node_objects['_DEFAULT_'].new node_data, level_bct, parent
-      if @node_objects.key? node_data['display_type']
-        node = @node_objects[node_data['display_type']].new node_data, level_bct, parent
+      node = @node_object_map['node_objects']['_DEFAULT_'].new node_data, level_bct, parent
+      if @node_object_map.key? 'node_column'
+        if @node_object_map.key? node_data[@node_object_map['node_column']]
+          node = @node_object_map['node_objects'][node_data[@node_object_map['node_column']]].new node_data, level_bct, parent
+        end
       end
 
       node.data.each do |key, value|
