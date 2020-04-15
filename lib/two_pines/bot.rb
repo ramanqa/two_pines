@@ -4,7 +4,7 @@ require 'two_pines/reporter'
 module TwoPines
 class Bot
 
-  attr_accessor :app_driver_class, :app_driver, :browser, :source_table, :config, :node_ui_objects, :custom_reporter
+  attr_accessor :app_driver_class, :app_driver, :browser, :source_table, :config, :node_ui_objects, :custom_reporter, :options
 
   #
   # {
@@ -12,6 +12,7 @@ class Bot
   #   :source_data=>
   #   :node_object_map=>
   #   :custom_reporter=>
+  #   :options=> Hash
   def initialize config
     Reporter.init_reporter
 
@@ -19,6 +20,9 @@ class Bot
     @source_table = config[:source_data]
     @app_driver_class = config[:app_driver_class]
     @custom_reporter = config[:custom_reporter] if config.key? :custom_reporter
+    @options = Hash.new
+    @options['RECYCLE_BROWSER_EACH_CHAPTER'] = false
+    @options = config[:options] if config.key? :options
     @app_driver = @app_driver_class.new
     start
   end
@@ -34,6 +38,7 @@ class Bot
   end
 
   def start
+    start_browser
     level_bct = [0,0,0,0,0]
     parent = Array.new
     require 'pp'
@@ -47,7 +52,9 @@ class Bot
         level_bct[3] = 0
         level_bct[3] = 0
         level_bct[4] = 0
-        start_browser
+        if @options['RECYCLE_BROWSER_PER_CHAPTER']
+          start_browser
+        end
       end
 
       node = @node_objects['_DEFAULT_'].new node_data, level_bct, parent
