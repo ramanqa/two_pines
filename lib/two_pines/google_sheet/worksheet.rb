@@ -17,10 +17,12 @@ class Worksheet
   def set_headers header_keys
     header_values = @headers
     @header_map = Hash.new
-    @headers.each_with_index do |header, index|
-      @header_map[header_keys[index]] = header
+    if @headers != nil
+      @headers.each_with_index do |header, index|
+        @header_map[header_keys[index]] = header
+      end
+      @headers = header_keys
     end
-    @headers = header_keys
     read_data
   end
 
