@@ -43,14 +43,13 @@ class Bot
     parent = Array.new
     @source_table.each do |node_data|
       level_bct[node_data['level'].to_i-1] += 1
+      for index in node_data['level'].to_i...level_bct.size do
+        level_bct[index] = 0
+      end
+
       parent[node_data['level'].to_i-1] = node_data
 
       if node_data['level'] == '1'
-        level_bct[1] = 0
-        level_bct[2] = 0
-        level_bct[3] = 0
-        level_bct[3] = 0
-        level_bct[4] = 0
         if @options['RECYCLE_BROWSER_PER_CHAPTER']
           start_browser
         end
@@ -58,7 +57,7 @@ class Bot
 
       node = @node_object_map['node_objects']['_DEFAULT_'].new node_data, level_bct, parent
       if @node_object_map.key? 'node_column'
-        if @node_object_map.key? node_data[@node_object_map['node_column']]
+        if @node_object_map['node_objects'].key? node_data[@node_object_map['node_column']]
           node = @node_object_map['node_objects'][node_data[@node_object_map['node_column']]].new node_data, level_bct, parent
         end
       end

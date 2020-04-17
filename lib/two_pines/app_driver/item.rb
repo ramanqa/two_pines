@@ -21,7 +21,8 @@ module Item
     @data = node
     @data['open'] = true
     @level_bct = level_bct
-    @parent = parent
+    @parent = parent.clone
+    @parent.delete(@parent.last)
     init_report @level_bct, @data
   end
 
