@@ -22,7 +22,9 @@ module Item
     @data['open'] = true
     @level_bct = level_bct
     @parent = parent.clone
-    @parent.delete(@parent.last)
+    while @parent.size > @data['level'].to_i-1 do
+      @parent.delete(@parent.last)
+    end
     init_report @level_bct, @data
   end
 
