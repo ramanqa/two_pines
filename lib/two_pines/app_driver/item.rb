@@ -16,6 +16,10 @@ module Item
     @level_bct[@data['level'].to_i-1]-1
   end
 
+  def level
+    @data['level'].to_i
+  end
+
   def initialize node, level_bct, parent
     @config = YAML.load_file './config.yaml'
     @data = node

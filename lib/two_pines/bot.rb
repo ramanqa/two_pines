@@ -32,7 +32,7 @@ class Bot
     #Selenium::WebDriver.logger.level = :info
     $browser = Selenium::WebDriver.for :chrome
     @browser = $browser
-    @browser.manage.timeouts.implicit_wait = 30
+    #@browser.manage.timeouts.implicit_wait = 30
     @app_driver.launch_title
     sleep 2
   end

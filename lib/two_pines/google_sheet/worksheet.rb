@@ -33,7 +33,7 @@ class Worksheet
     for row_number in @header_row+1...raw_rows.count do
       data_row = Hash.new
       headers.count.times do |index|
-        data_row[@headers[index]] = raw_rows[row_number][index] unless raw_rows[row_number][index] == ""
+        data_row[@headers[index]] = raw_rows[row_number][index].strip unless raw_rows[row_number][index] == ""
       end
       if !data_row.empty?
         data_row['__sheet_row_number'] = row_number
