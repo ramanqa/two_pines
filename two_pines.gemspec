@@ -11,6 +11,8 @@ Gem::Specification.new do |g|
       'lib/two_pines/app_driver/item.rb',
       'lib/two_pines/reporter.rb',
       'lib/two_pines/custom_reporter.rb',
+      'lib/two_pines/browser_tools.rb',
+      'lib/two_pines/js/browser_tools.zip',
       'lib/two_pines/google_sheet/sheet.rb',
       'lib/two_pines/google_sheet/worksheet.rb',
       'lib/two_pines/assets/reveal.js.zip',

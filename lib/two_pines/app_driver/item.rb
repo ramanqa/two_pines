@@ -12,6 +12,10 @@ module Item
     $browser
   end
 
+  def browser_tools
+    $browser_tools
+  end
+
   def item_index
     @level_bct[@data['level'].to_i-1]-1
   end

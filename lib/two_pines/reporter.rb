@@ -2,6 +2,7 @@ module TwoPines
 module Reporter
 
   def self.init_reporter
+    puts "Setting up reports"
      FileUtils.rm_rf("./report/images", secure: true)
      FileUtils.mkdir_p "./report/images"
      Zip::File.open(__dir__ + '/assets/reveal.js.zip') do |zip_file|
@@ -11,6 +12,7 @@ module Reporter
      end
      File.delete("./report/slides.js") if File.exists?("./report/slides.js")
      FileUtils.cp __dir__ + '/assets/index.html', './report/index.html'
+     puts "Done."
   end
 
   def init_report level_bct, node_data
@@ -54,7 +56,7 @@ module Reporter
     result['actual'] = actual
     @item_report['results'].push result
     file_name = "#{Time.now.to_f}.png"
-    $browser.save_screenshot("./report/images/#{file_name}")
+    $browser_tools.save_screenshot("./report/images/#{file_name}")
     File.open './report/slides.js', 'a' do |f|
       f.puts "e.setAttribute('data-background','#ff9977');"
       f.puts "html += \"<div class='assertion fail' style='text-align:left;'>\";"

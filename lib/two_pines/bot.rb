@@ -1,10 +1,11 @@
 require 'zip'
 require 'two_pines/reporter'
+require 'two_pines/browser_tools'
 
 module TwoPines
 class Bot
 
-  attr_accessor :app_driver_class, :app_driver, :browser, :source_table, :node_object_map, :config, :custom_reporter, :options
+  attr_accessor :app_driver_class, :app_driver, :browser, :browser_tools, :source_table, :node_object_map, :config, :custom_reporter, :options
 
   #
   # {
@@ -27,11 +28,19 @@ class Bot
     start
   end
 
+  at_exit do
+    $browser_tools.kill
+  end
+
   def start_browser
+    @browser_tools.kill if @browser
     @browser.quit if @browser
     #Selenium::WebDriver.logger.level = :info
-    $browser = Selenium::WebDriver.for :chrome
+    chrome_options = Selenium::WebDriver::Chrome::Options.new(args:['remote-debugging-port=9000'])
+    $browser = Selenium::WebDriver.for(:chrome, options: chrome_options)
     @browser = $browser
+    $browser_tools = TwoPines::BrowserTools.new
+    @browser_tools = $browser_tools
     #@browser.manage.timeouts.implicit_wait = 30
     @app_driver.launch_title
     sleep 2
@@ -74,6 +83,10 @@ class Bot
         node.finalize_report
       end
     end
+
+    # kill browser
+    @browser.quit
+    @browser_tools.kill
   end
 
 end # class

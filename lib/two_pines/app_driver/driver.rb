@@ -9,6 +9,10 @@ module Driver
     $browser
   end
 
+  def browser_tools
+    $browser_tools
+  end
+
   def launch_title
     raise 'Not implemented'
   end
