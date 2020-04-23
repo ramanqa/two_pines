@@ -1,0 +1,24 @@
+<html>
+<body>
+
+<script>
+  i = window.location.href.split("?")[1].split("i=")[1].split("&")[0];
+  document.querySelector("body").style.backgroundImage="url('"+i+"')";
+  x = window.location.href.split("?")[1].split("x=")[1].split("&")[0];
+  y = window.location.href.split("?")[1].split("y=")[1].split("&")[0];
+  h = window.location.href.split("?")[1].split("h=")[1].split("&")[0];
+  w = window.location.href.split("?")[1].split("w=")[1].split("&")[0];
+  e = document.createElement("div");
+  e.style.border = "8px dashed red";
+  e.style.width = w + "px";
+  e.style.height = h + "px";
+  e.style.marginTop = y + "px";
+  e.style.marginLeft = x + "px";
+  e.innerText = ".";
+  console.log(x);
+  console.log(h);
+  console.log(w);
+  document.querySelector("body").appendChild(e);
+</script>
+</body>
+</html>

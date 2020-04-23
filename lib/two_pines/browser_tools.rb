@@ -18,6 +18,9 @@ class BrowserTools
 
   def kill
     Process.kill "SIGHUP", @browserToolsPid
+    Process.kill "SIGQUIT", @browserToolsPid
+    Process.kill "SIGINT", @browserToolsPid
+    system "killall node"
   end
 
   def save_screenshot filename
@@ -34,6 +37,13 @@ class BrowserTools
     sniff_thread = Hash.new
     sniff_thread['thread'] = Thread.new do
       sniff_thread['response'] = RestClient.post("http://localhost:#{@apiPort}/sniff", {"url":sniffPath}.to_json, {content_type: :json}).body
+    end
+    @sniff_threads[sniffPath] = sniff_thread
+  end
+  def set_sniff_ending_with_url sniffPath
+    sniff_thread = Hash.new
+    sniff_thread['thread'] = Thread.new do
+      sniff_thread['response'] = RestClient.post("http://localhost:#{@apiPort}/sniff_ending_with", {"url":sniffPath}.to_json, {content_type: :json}).body
     end
     @sniff_threads[sniffPath] = sniff_thread
   end

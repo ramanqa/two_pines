@@ -16,7 +16,8 @@ Gem::Specification.new do |g|
       'lib/two_pines/google_sheet/sheet.rb',
       'lib/two_pines/google_sheet/worksheet.rb',
       'lib/two_pines/assets/reveal.js.zip',
-      'lib/two_pines/assets/index.html'
+      'lib/two_pines/assets/index.html',
+      'lib/two_pines/assets/image.html'
     ]
   g.license = 'MIT'
 end

@@ -40,6 +40,21 @@ module Item
     Selenium::WebDriver::Wait.new :timeout=>timeout
   end
 
+  def assertion_response actual, element
+    response = Hash.new
+    response['actual'] = actual
+    response['element'] = element
+    response
+  end
+
+  class AssertionResponse
+    attr_accessor :actual, :element
+    def initialize actual, element
+      @actual = actual
+      @element = element
+    end
+  end
+
   def method_missing method, *args, &block
     if method.to_s.start_with? "assert_"
       property = method.to_s.split('assert_')[1]
@@ -59,6 +74,20 @@ module Item
           log_success property, @data[property]
         else
           log_failure property, @data[property], actual
+        end
+      elsif actual.class == Hash
+        if [TrueClass, FalseClass].include?(actual['actual'].class)
+          if actual['actual']
+            log_success property, @data[property]
+          else
+            log_failure property, @data[property], actual['actual'], actual['element']
+          end
+        elsif actual['actual'] == @data['property']
+          log_success property, @data['property']
+        elsif actual['actual'] == "NoMethodError"
+          log_skipped property, @data['property']
+        else
+          log_failure property, @data[property], actual['actual'], actual['element']
         end
       elsif actual == @data[property]
         log_success property, @data[property]
