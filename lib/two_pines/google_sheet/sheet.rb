@@ -18,7 +18,7 @@ class Sheet
   end
 
   def create_worksheet sheet_title
-      @sheet.add_worksheet sheet_title
+      @sheet.add_worksheet sheet_title, 5000
       worksheet_by_title sheet_title, 0
   end
 
